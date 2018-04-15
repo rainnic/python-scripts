@@ -1,7 +1,7 @@
 A little Python program to respect the 20-20-20 rule and prevent eye strain
 ===========================================================================
 
-The program turns off the screen of your computer, then turns on it and makes a sound when 20 seconds have passed, with the ability to deactivate the rule if your audio card is busy (useful if you are watching videos).
+The program every 20 minutes turns off the screen of your computer, then turns on it and makes a sound when 20 seconds have passed, with the ability to deactivate the rule if your audio card is busy (useful if you are watching videos).
 
 ## Requirements
 
@@ -30,9 +30,9 @@ python3.6 eye_strain_reducer.py
 ```
 Then it prints in the shell:
 *   the time when it starts;
-*   the time and the correct action
+*   the time and the correct action every the duration setted
     * --> OKAY!! (if turns off the screen)
-    * --> NO WAY (if check_audio option is ON and if the number of the sink is greater than or equal to 1).
+    * --> NO WAY (if doesn't turn off the screen because check_audio option is ON and the number of the sink is greater than or equal to 1).
 
 Here is an example:
 ```
