@@ -1,28 +1,51 @@
-Shuffle a list of files into a folder
-=====================================
+A little Python program to respect the 20-20-20 rule and prevent eye strain
+===========================================================================
 
-The script removes empty spaces and the special characters (', " and -) from the files and then it shuffles them by adding a random number followed by an underscore. For the MP3 files it shuffles also the ID3 tags and it has a special feature to add them starting from the filename (if it is renamed like this: Album_name-Artist_name-Title_name.mp3).
+The program turns off the screen of your computer, then turns on it and makes a sound when 20 seconds have passed, with the ability to deactivate the rule if your audio card is busy (useful if you are watching videos).
 
-# Usage
-First you have to check the SETTINGS section of the script and change if is necessary:
+## Requirements
 
-```
+I wrote it with Python 3.6 and the following packages are required:
+-   pygame;
+-   sys;
+-   subprocess;
+-   schedule;
+-   time;
+-   pacmd.
+
+## Settings:
+At the beginning of the file there is three items to adapt the program at your needs:
+
+```python
 # SETTINGS:
-ext=mp3		# extension of the files to shuffle
+size = (1920, 1080) # size of your monitor
+check_audio = ‘OFF’ # with 'ON' the script doesn't turn off the screen if your audio card is working
+duration = 1200 # the time interval in seconds
 ```
 
-In this case the files to randomize and rename is MP3s and the debug is set to true
-
-After fixed, it works in this manner:
-
+## How it works
+Simple execute it from a terminal or create a launcher in this manner:
+```bash
+python3.6 eye_strain_reducer.py
 ```
-./fileRandomizer.sh -shuffle directory --> to add a random prefix to a directory of mp3
-./fileRandomizer.sh -clean directory   --> to remove the prefix to a directory of mp3
-./fileRandomizer.sh -tags directory    --> to add id3 tags to a directory of mp3
-                                           from the filename: Album-Artist-Title.mp3
-```
+Then it prints in the shell:
+*   the time when it starts;
+*   the time and the correct action
+    * --> OKAY!! (if turns off the screen)
+    * --> NO WAY (if check_audio option is ON and if the number of the sink is greater than or equal to 1).
 
-__NOTE__: the directory is not necessary if you have the files in the working directory.
+Here is an example:
+```
+$ python3.6 eye_strain_reducer.py
+19:35:11–> Starting…
+
+b’0\\n’
+19:55:11–> OKAY!!
+
+b’1\\n’
+20:15:34–> NO WAY!!
+...
+```
 
 More info on my site:
-http://rainnic.altervista.org/en/tag/bash
+https://rainnic.altervista.org/tag/python
