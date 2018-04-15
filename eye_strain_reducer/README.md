@@ -11,7 +11,7 @@ I wrote it with Python 3.6 and the following packages are required:
 -   subprocess;
 -   schedule;
 -   time;
--   pacmd.
+-   pacmd (i.e. Pulseaudio and strictly connected to the OS).
 
 ## Settings:
 At the beginning of the file there is three items to adapt the program at your needs:
