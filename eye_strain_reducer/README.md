@@ -48,4 +48,4 @@ b’1\\n’
 ```
 
 More info on my site:
-https://rainnic.altervista.org/tag/python
+[Python on Rainnic](https://rainnic.altervista.org/tag/python)
