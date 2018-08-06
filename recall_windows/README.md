@@ -10,6 +10,7 @@ Python 3.6 and the following packages:
 - os;
 - sys;
 - time.
+
 On Ubuntu and its derivatives 
 - wmctrl (sudo apt install wmctrl).
 
