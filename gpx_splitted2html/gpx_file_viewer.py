@@ -54,6 +54,26 @@ if file:
 
     # Files can have more than one track, which can have more than one segment, which have more than one point...
     print('Num tracks: ' + str(len(gpx.tracks)))
+    # If GPX does not contain tracks and segments
+    if (len(gpx.tracks) == 0):
+        # Read in the file
+        with open(sys.argv[1], 'r') as file :
+            filedata = file.read()
+
+        # Replace the target string
+        filedata = filedata.replace('rte', 'trk')
+        filedata = filedata.replace('<trk>', '<trk><trkseg>')
+        filedata = filedata.replace('</trk>', '</trkseg></trk>')
+
+        # Write the file out again
+        # with open('file.txt', 'w') as file:
+        with open('Fixed_'+sys.argv[1], 'w') as file:
+            file.write(filedata)
+
+        # Load the new file with track and segment
+        file = 'Fixed_'+sys.argv[1]
+        gpx = gpxpy.parse(open(file))
+
     track = gpx.tracks[0]
     print('Num segments: ' + str(len(track.segments)))
     segment = track.segments[0]
@@ -187,6 +207,8 @@ if file:
 
     print(df.iloc[0,2])
     print(df.iloc[-1,2])
+    if (df.iloc[0,2] is None): df.iloc[0,2] = 0
+    if (df.iloc[-1,2] is None): df.iloc[-1,2] = 0
     elevationDelta = "{:.0f}".format(abs(df.iloc[-1,2]-df.iloc[0,2]))+' m'
     print('Dislivello di '+elevationDelta)
 
