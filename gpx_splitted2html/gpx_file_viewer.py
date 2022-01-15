@@ -1,9 +1,17 @@
-# Source:
-# http://research.ganse.org/datasci/gps/
-# https://ocefpaf.github.io/python4oceanographers/blog/2014/08/18/gpx
+####################
+# gpx_file_viewer.py
+####################
+# From a GPX file it returns an HTML with the map of the track and the summary.
+#
+# Usage:
+# gpx_file_viewer.py filename.gpx
 #
 # Written by Nicola Rainiero
 # https://rainnic.altervista.org/tag/python
+#
+# Source:
+# http://research.ganse.org/datasci/gps/
+# https://ocefpaf.github.io/python4oceanographers/blog/2014/08/18/gpx
 #
 
 import gpxpy
@@ -158,7 +166,7 @@ if file:
     print("Time between dates: %d days, %d hours, %d minutes and %d seconds" % (days[0], hours[0], minutes[0], seconds[0]))
     #durata = hours+':'+minutes+':'+seconds
     #durata = "Durata: %d giorno/i, %d:%d:%d" % (days[0], hours[0], minutes[0], seconds[0])
-    durata = "Durata: %d:%d:%d" % (hours[0], minutes[0], seconds[0])
+    durata = "Duration: %d:%d:%d" % (hours[0], minutes[0], seconds[0])
     print(durata)
 
 
@@ -171,11 +179,13 @@ if file:
     mymap = folium.Map( location=[ df.Latitude.mean(), df.Longitude.mean() ], tiles='CartoDB positron', zoom_start=12)
     
     for coord in df[['Latitude','Longitude']].values:
-        folium.CircleMarker(location=[coord[0],coord[1]], radius=5,color='red').add_to(mymap)
+        folium.CircleMarker(location=[coord[0],coord[1]], radius=2,color='blue').add_to(mymap)
     # Start point
-    folium.Marker(location=[df.iloc[0,1], df.iloc[0,0]],popup="Timberline Lodge",icon=folium.Icon(color="green"), ).add_to(mymap)
+    # folium.Marker(location=[df.iloc[0,1], df.iloc[0,0]],popup="Timberline Lodge",icon=folium.Icon(color="green"), ).add_to(mymap)
+    folium.CircleMarker(location=[df.iloc[0,1], df.iloc[0,0]], radius=10,color='green').add_to(mymap)
     # Finish point
-    folium.Marker(location=[df.iloc[-1,1], df.iloc[-1,0]],popup="Timberline Lodge",icon=folium.Icon(color="red"), ).add_to(mymap)
+    # folium.Marker(location=[df.iloc[-1,1], df.iloc[-1,0]],popup="Timberline Lodge",icon=folium.Icon(color="red"), ).add_to(mymap)
+    folium.CircleMarker(location=[df.iloc[-1,1], df.iloc[-1,0]], radius=10,color='red').add_to(mymap)
     #mymap   # shows map inline in Jupyter but takes up full width
     #mymap.save('fol.html')  # saves to html file for display below
 
@@ -228,19 +238,17 @@ if file:
     }
     </style>
     </head>
-    <body><h2>Percorsi GPS del file: """+file+"""</h2>Senza intervalli di sosta<br><hr>"""
+    <body><h2>GPS track from the file: """+file+"""</h2>Without any break<br><hr>"""
 
 
     # "fol.html"
     message = message +"""
-    Partenza il """+targetStringDate+""" alle """+targetStringTime+"""<br>
-    Arrivo il """+targetStringFinalDate+""" alle """+targetStringFinalTime+"""<br>"""+durata+"""<br>
-    Percorsi """+"{:.3f}".format(sum(df['dist(meters)'][1:])/1000)+' km'+"""<br>
-    Dislivello """+"{:.0f}".format(df.iloc[-1,2]-df.iloc[0,2])+' m'+"""<br>
+    Tracked on """+targetStringDate+""" and start at """+targetStringTime+"""<br>
+    Stop on """+targetStringFinalDate+""" at """+targetStringFinalTime+"""<br>"""+durata+"""<br>
+    Length path """+"{:.3f}".format(sum(df['dist(meters)'][1:])/1000)+' km'+"""<br>
+    Difference in altitude """+"{:.0f}".format(df.iloc[-1,2]-df.iloc[0,2])+' m'+"""<br>
     <center><iframe width="680" height="300" """+"src=\""+os.path.splitext(file)[0]+'.html'+"\">""""</iframe>
-    <br>(File: <b>"""+os.path.splitext(file)[0]+"""</b>)<br><br></center><br><hr>"""
-    #if (i % 2 == 0):
-        #message = message +""" <div class="page-break"></div> <h2>Percorsi GPS della cartella: """+folder+"""</h2>Con intervalli di sosta inferiori a <b>1 ora</b><br><hr>"""
+    <br>(File: <b>"""+os.path.splitext(file)[0]+""".gpx</b>)<br><br></center><br><hr>"""
 
     gpx = None
     data = []

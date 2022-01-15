@@ -1,15 +1,22 @@
-# Source:
-# http://research.ganse.org/datasci/gps/
-# https://ocefpaf.github.io/python4oceanographers/blog/2014/08/18/gpx
+######################
+# gpx_folder_viewer.py
+######################
+# giving a folder full of splitted GPX files, it creates an HTML with all the single tracks on a map.
+#
+# Usage:
+# gpx_folder_viewer.py folder
 #
 # Written by Nicola Rainiero
 # https://rainnic.altervista.org/tag/python
+#
+# Source:
+# http://research.ganse.org/datasci/gps/
+# https://ocefpaf.github.io/python4oceanographers/blog/2014/08/18/gpx
 #
 
 import gpxpy
 import sys
 import os
-##import gmplot   # (https://github.com/vgm64/gmplot)
 import folium   # (https://pypi.python.org/pypi/folium)
 from datetime import datetime
 import pytz
@@ -50,7 +57,7 @@ message = """<html>
 }
 </style>
 </head>
-<body><h2>Percorsi GPS della cartella: """+folder+"""</h2>Con intervalli di sosta inferiori a <b>10 minuti</b><br><hr>"""
+<body><h2>GPS tracks from the folder: """+folder+"""</h2>The time of breaks is fixed in <b>10 minutes</b><br><hr>"""
 
 
 
@@ -59,9 +66,9 @@ os.chdir(folder)
 ## sorted(glob.glob('*.png'))
 j = 0
 for file in sorted(glob.glob("*.gpx"), key=os.path.getmtime):
-    print('Il file in questione è il seguente -------->' + file)
+    print('The file is the following -------->' + file)
     gpxCounter = len(glob.glob1(os.path.dirname(__file__), "*.gpx"))
-    print('I gpx presenti sono ------------>' + str(gpxCounter))
+    print('The gpxs in the folder are ------------>' + str(gpxCounter))
     #i = i+1
     #gpx = gpxpy.parse(open('./route1141462231.gpx'))
     gpx = gpxpy.parse(open(file))
@@ -99,13 +106,6 @@ for file in sorted(glob.glob("*.gpx"), key=os.path.getmtime):
         mydate = str(datetime.today().strftime('%Y-%m-%d %H:%M:%S+00:00'))
     else:
         mydate = str(df.Time.iloc[0])
-    #mydate = str(df.Time.iloc[0])
-    #mydate = "2020-08-31 05:04:19+00:00"
-    #mydate = datetime.strptime(mydate, '%Y-%m-%d %H:%M:%S+00:00')
-    #mydate = str(df.Time.iloc[0])
-    # obj = datetime.strptime('2018-03-01T12:00:00+01:00', '%Y-%m-%dT%H:%M:%S+01:00')
-    #obj = datetime.strptime('2020-08-31 05:04:19+00:00', '%Y-%m-%d %H:%M:%S+00:00')
-    #obj = datetime.strptime('2020-08-31 05:04:19', '%Y-%m-%d %H:%M:%S')
 
     print(convert_datetime_timezone(mydate, "UTC", "Europe/Rome"))
     newdate = convert_datetime_timezone(mydate, "UTC", "Europe/Rome")
@@ -125,7 +125,6 @@ for file in sorted(glob.glob("*.gpx"), key=os.path.getmtime):
         myFinaldate = str(datetime.today().strftime('%Y-%m-%d %H:%M:%S+00:00'))
     else:
         myFinaldate = str(df.Time.iloc[-1])
-    #myFinaldate = str(df.Time.iloc[-1])
     print(convert_datetime_timezone(myFinaldate, "UTC", "Europe/Rome"))
     newFinaldate = convert_datetime_timezone(myFinaldate, "UTC", "Europe/Rome")
     print(newFinaldate)
@@ -146,9 +145,7 @@ for file in sorted(glob.glob("*.gpx"), key=os.path.getmtime):
     minutes = divmod(hours[1], 60)                # Use remainder of hours to calc minutes
     seconds = divmod(minutes[1], 1)               # Use remainder of minutes to calc seconds
     print("Time between dates: %d days, %d hours, %d minutes and %d seconds" % (days[0], hours[0], minutes[0], seconds[0]))
-    #durata = hours+':'+minutes+':'+seconds
-    #durata = "Durata: %d giorno/i, %d:%d:%d" % (days[0], hours[0], minutes[0], seconds[0])
-    durata = "Durata: %d:%d:%d" % (hours[0], minutes[0], seconds[0])
+    durata = "Duration: %d:%d:%d" % (hours[0], minutes[0], seconds[0])
     print(durata)
 
 
@@ -161,11 +158,13 @@ for file in sorted(glob.glob("*.gpx"), key=os.path.getmtime):
     mymap = folium.Map( location=[ df.Latitude.mean(), df.Longitude.mean() ], tiles='CartoDB positron', zoom_start=12)
     #folium.PolyLine(df[['Latitude','Longitude']].values, color="red", weight=2.5, opacity=1).add_to(mymap)
     for coord in df[['Latitude','Longitude']].values:
-        folium.CircleMarker(location=[coord[0],coord[1]], radius=5,color='red').add_to(mymap)
+        folium.CircleMarker(location=[coord[0],coord[1]], radius=2,color='blue').add_to(mymap)
     # Start point
-    folium.Marker(location=[df.iloc[0,1], df.iloc[0,0]],popup="Timberline Lodge",icon=folium.Icon(color="green"), ).add_to(mymap)
+    #folium.Marker(location=[df.iloc[0,1], df.iloc[0,0]],popup="Timberline Lodge",icon=folium.Icon(color="green"), ).add_to(mymap)
+    folium.CircleMarker(location=[df.iloc[0,1], df.iloc[0,0]], radius=10,color='green').add_to(mymap)
     # Finish point
-    folium.Marker(location=[df.iloc[-1,1], df.iloc[-1,0]],popup="Timberline Lodge",icon=folium.Icon(color="red"), ).add_to(mymap)
+    #folium.Marker(location=[df.iloc[-1,1], df.iloc[-1,0]],popup="Timberline Lodge",icon=folium.Icon(color="red"), ).add_to(mymap)
+    folium.CircleMarker(location=[df.iloc[-1,1], df.iloc[-1,0]], radius=10,color='red').add_to(mymap)
     #mymap   # shows map inline in Jupyter but takes up full width
     #mymap.save('fol.html')  # saves to html file for display below
 
@@ -200,16 +199,16 @@ for file in sorted(glob.glob("*.gpx"), key=os.path.getmtime):
     # "fol.html"
     if ( sum(df['dist(meters)'][1:]) > 500):
         message = message +"""
-        Tracciamento effettuato il """+targetStringDate+"""<br>
-        Partenza alle """+targetStringTime+"""<br>
-        Arrivo alle """+targetStringFinalTime+"""<br>"""+durata+"""<br>
-        Percorsi """+"{:.3f}".format(sum(df['dist(meters)'][1:])/1000)+' km'+"""<br>
-        Dislivello """+"{:.0f}".format(df.iloc[-1,2]-df.iloc[0,2])+' m'+"""<br>
+        Tracked on """+targetStringDate+"""<br>
+        Start at """+targetStringTime+"""<br>
+        Stop at """+targetStringFinalTime+"""<br>"""+durata+"""<br>
+        Length path """+"{:.3f}".format(sum(df['dist(meters)'][1:])/1000)+' km'+"""<br>
+        Difference in altitude """+"{:.0f}".format(df.iloc[-1,2]-df.iloc[0,2])+' m'+"""<br>
         <center><iframe width="680" height="300" """+"src=\""+folder+"/"+os.path.splitext(file)[0]+'.html'+"\">""""</iframe>
-        <br>(File: <b>"""+os.path.splitext(file)[0]+"""</b>)<br><br></center><hr>"""
+        <br>(File: <b>"""+os.path.splitext(file)[0]+""".gpx</b>)<br><br></center><hr>"""
         j += 1
         if ((j % 2 == 0)and(j < (gpxCounter-1))):
-            message = message +""" <div class="page-break"></div> <h2>Percorsi GPS della cartella: """+folder+"""</h2>Con intervalli di sosta inferiori a <b>10 minuti</b><hr>"""
+            message = message +""" <div class="page-break"></div> <h2>GPS tracks from the folder: """+folder+"""</h2>The time of breaks is fixed in <b>10 minutes</b><hr>"""
 
     gpx = None
     data = []
