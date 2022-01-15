@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 ####################
 # gpx_file_viewer.py
 ####################

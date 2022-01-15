@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-
+#!/usr/bin/env python3
 # Copyright (C) 2015 Harvey Chapman <hchapman@3gfp.com>
 # Public Domain
 # Use at your own risk.
